@@ -38,7 +38,7 @@ type Severity string
 // Client allowing for perfoming operations against the Zenoss API
 type Client interface {
 	// AddEvent to component on device in Zenoss
-	AddEvent(ctx context.Context, summary, message, device, component string, severity Severity, evClass, evKey string) error
+	AddEvent(ctx context.Context, summary, message, device, component string, severity Severity, evClass, evKey string, extraData map[string]string) error
 }
 
 type client struct {
@@ -85,7 +85,7 @@ func NewClient(baseURI, username, password, monitor string, insecureSkipTLSVerif
 }
 
 // AddEvent to component on device in Zenoss
-func (api *client) AddEvent(ctx context.Context, summary, message, device, component string, severity Severity, evClass, evKey string) error {
+func (api *client) AddEvent(ctx context.Context, summary, message, device, component string, severity Severity, evClass, evKey string, extraData map[string]string) error {
 	logger := log.WithContext(ctx)
 	d := map[string]string{
 		"summary":    summary,
@@ -97,6 +97,9 @@ func (api *client) AddEvent(ctx context.Context, summary, message, device, compo
 		"eventKey":   evKey,
 		"evclasskey": "",
 		"evclass":    evClass,
+	}
+	for k, v := range extraData {
+		d[k] = v
 	}
 	r := request{
 		Action: "EventsRouter",
