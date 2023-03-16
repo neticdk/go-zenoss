@@ -58,6 +58,10 @@ type request struct {
 	Tid    int    `json:"tid"`
 }
 
+func (r request) String() string {
+	return fmt.Sprintf("{action=%s,method=%s,data=%v,tid=%d}", r.Action, r.Method, r.Data, r.Tid)
+}
+
 type data map[string]string
 
 type response struct {
@@ -66,6 +70,10 @@ type response struct {
 	Method string                 `json:"method"`
 	Result map[string]interface{} `json:"result"`
 	Tid    int                    `json:"tid"`
+}
+
+func (r response) String() string {
+	return fmt.Sprintf("{uuid=%s,action=%s,method=%s,result=%v,tid=%d}", r.UUID, r.Action, r.Method, r.Result, r.Tid)
 }
 
 // NewClient create new Zenoss instance
@@ -87,6 +95,20 @@ func NewClient(baseURI, username, password, monitor string, insecureSkipTLSVerif
 // AddEvent to component on device in Zenoss
 func (api *client) AddEvent(ctx context.Context, summary, message, device, component string, severity Severity, evClass, evKey string, extraData map[string]string) error {
 	logger := log.WithContext(ctx)
+
+	if len(summary) > 255 {
+		return fmt.Errorf("'summary' must be less than 255")
+	}
+	if len(message) > 4095 {
+		return fmt.Errorf("'message' must be less than 4096 characters")
+	}
+	if len(component) > 255 {
+		return fmt.Errorf("'component' must be less than 255")
+	}
+	if len(evKey) > 127 {
+		return fmt.Errorf("'evKey' must be less than 127")
+	}
+
 	d := map[string]string{
 		"summary":    summary,
 		"message":    message,

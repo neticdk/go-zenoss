@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -63,4 +64,8 @@ func newStubAPI(handler http.HandlerFunc) (Client, *httptest.Server) {
 		baseURI: server.URL,
 	}
 	return api, server
+}
+
+func init() {
+	logrus.SetLevel(logrus.TraceLevel)
 }
