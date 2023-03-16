@@ -135,6 +135,7 @@ func (api *client) AddEvent(ctx context.Context, summary, message, device, compo
 	if err != nil {
 		return fmt.Errorf("unable to parse response from Zenoss: %w", err)
 	}
+	logger.WithField("result", result).Trace("Received result from Zenoss")
 
 	if !result.Result["success"].(bool) {
 		return fmt.Errorf("event could not be created: %+v", result)
