@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Mount bazel cache
+        uses: actions/cache@v3
+        with:
+          path: "~/.cache/bazel"
+          key: bazel
+
+      - name: Run tests
+        run: bazel test //...
+
+      - name: Run Gosec Security Scanner
+        uses: securego/gosec@master
+        env:
+          # https://github.com/securego/gosec/issues/776
+          GOROOT: ""
+        with:
+          args: ./...
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: "fs"
+          format: "table"
+          exit-code: "1"
+          ignore-unfixed: true
+          vuln-type: "library"
