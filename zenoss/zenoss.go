@@ -87,6 +87,7 @@ func NewClient(baseURI, username, password, monitor string, insecureSkipTLSVerif
 	return &client{
 		client: &http.Client{
 			Transport: &http.Transport{
+				//#nosec G402
 				TLSClientConfig: &tls.Config{InsecureSkipVerify: insecureSkipTLSVerify},
 			},
 		},
