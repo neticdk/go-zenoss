@@ -7,13 +7,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"strings"
 	"sync"
 	"time"
-
-	log "github.com/sirupsen/logrus"
 )
 
 // Client allowing for perfoming operations against the Zenoss API
@@ -101,8 +100,6 @@ func NewClient(baseURI, username, password, monitor string, insecureSkipTLSVerif
 
 // AddEvent to component on device in Zenoss
 func (api *client) AddEvent(ctx context.Context, summary, message, device, component string, severity Severity, evClass, evKey string, extraData map[string]string) error {
-	logger := log.WithContext(ctx)
-
 	if len(summary) > 255 {
 		return fmt.Errorf("'summary' must be less than 255")
 	}
@@ -135,7 +132,7 @@ func (api *client) AddEvent(ctx context.Context, summary, message, device, compo
 		Method: methodAddEvent,
 		Data:   []interface{}{d},
 	}
-	logger.WithField("request", r).Trace("Constructed request for Zenoss")
+	slog.Debug("Constructed request for Zenoss", "request", r)
 
 	var resp addEventResponse
 	err := api.doRequest(ctx, r, pathEvconsoleRouter, &resp)
