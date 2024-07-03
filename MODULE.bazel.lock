@@ -107,7 +107,7 @@
     "@@gazelle~//:extensions.bzl%go_deps": {
       "general": {
         "bzlTransitiveDigest": "3lAltYJp6u8Z4k9qI7Nn1s2S5dTYTxi80hAMysQWRJE=",
-        "usagesDigest": "iIWExbvsLBPcdgNT7WY049qr6UIlKOZKSc6gu/IsMoI=",
+        "usagesDigest": "7ItId9TIHOGskZqmD63p4408QP2SHNhLcp3HSahq+dk=",
         "recordedFileInputs": {
           "@@//go.mod": "4feda1d2f54eefa09b04dda516a94f255125b19cb29f97bf02fe724d952b1e66",
           "@@rules_go~//go.mod": "de22304b720f7f61350ec1c9739de6c0a1b1103fd22bfeb6e92c6c843ddc6d6e",
