@@ -1,10 +1,10 @@
 module(
     name = "go-zenoss",
-    version = "1.0.4",
+    version = "1.0.5",
 )
 
-bazel_dep(name = "rules_go", version = "0.45.1")
-bazel_dep(name = "gazelle", version = "0.35.0")
+bazel_dep(name = "rules_go", version = "0.46.0")
+bazel_dep(name = "gazelle", version = "0.36.0")
 
 go_deps = use_extension("@gazelle//:extensions.bzl", "go_deps")
 go_deps.from_file(go_mod = "//:go.mod")
