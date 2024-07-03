@@ -6,10 +6,12 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strings"
 	"testing"
 
-	"github.com/sirupsen/logrus"
+	"log/slog"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -214,7 +216,11 @@ func newStubAPI(handler http.HandlerFunc) (Client, *httptest.Server) {
 }
 
 func init() {
-	logrus.SetLevel(logrus.TraceLevel)
+	opts := &slog.HandlerOptions{
+		Level:     slog.LevelDebug,
+		AddSource: true,
+	}
+	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stdout, opts)))
 }
 
 const readDeviceResponse = `{
