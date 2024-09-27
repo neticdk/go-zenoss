@@ -163,12 +163,16 @@ func (z *client) ReadDevice(ctx context.Context, uid string) (*Device, error) {
 		return nil, fmt.Errorf("unable to read device: %w", err)
 	}
 
-	if !dev.Result.Success || dev.Result.Count > 1 {
-		return nil, fmt.Errorf("error reading device or more devices returned")
+	if dev.Result.Count > 1 {
+		return nil, fmt.Errorf("error multiple devices returned")
 	}
 
 	if dev.Result.Count == 0 || len(dev.Result.Devices) == 0 {
 		return nil, nil
+	}
+
+	if !dev.Result.Success {
+		return nil, fmt.Errorf("error reading device")
 	}
 
 	return &dev.Result.Devices[0], nil
