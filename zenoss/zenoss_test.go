@@ -84,6 +84,23 @@ func TestReadDevice(t *testing.T) {
 	assert.Equal(t, "oaas1.k8s.jysk.netic.dk", device.Name)
 }
 
+func TestReadDeviceNotFound(t *testing.T) {
+	api, server := newStubAPI(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		if req.URL.Path == "/zport/dmd/device_router" {
+			buf := new(strings.Builder)
+			io.Copy(buf, req.Body)
+			assert.Equal(t, `{"action":"DeviceRouter","method":"getDevices","data":[{"uid":"/zport/dmd/Devices/VirtualDevices/jysk-k8s/devices/oaas1.k8s.jysk.netic.dk"}],"tid":1}`, buf.String())
+			assert.Equal(t, "POST", req.Method)
+			rw.Write([]byte(readDeviceResponseNotFound))
+		}
+	}))
+	defer server.Close()
+
+	device, err := api.ReadDevice(context.Background(), "/zport/dmd/Devices/VirtualDevices/jysk-k8s/devices/oaas1.k8s.jysk.netic.dk")
+	assert.NoError(t, err)
+	assert.Nil(t, device)
+}
+
 func TestCreateDevice(t *testing.T) {
 	api, server := newStubAPI(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		assert.Equal(t, "POST", req.Method)
@@ -301,6 +318,19 @@ const readDeviceResponse = `{
 		  "name": "oaas1.k8s.jysk.netic.dk"
 		}
 	  ]
+	},
+	"tid": 1,
+	"type": "rpc",
+	"method": "getDevices"
+  }`
+
+const readDeviceResponseNotFound = `{
+	"uuid": "f353184f-59f4-4057-9cc6-8614dd7cc91e",
+	"action": "DeviceRouter",
+	"result": {
+	  "totalCount": 0,
+	  "hash": "",
+	  "success": false
 	},
 	"tid": 1,
 	"type": "rpc",
