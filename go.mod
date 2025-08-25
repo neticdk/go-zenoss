@@ -8,4 +8,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-require github.com/stretchr/testify v1.10.0
+require github.com/stretchr/testify v1.11.0
